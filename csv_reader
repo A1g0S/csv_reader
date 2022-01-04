@@ -1,0 +1,59 @@
+#!/usr/bin/env python3
+
+import csv
+from sys import argv,exit
+import argparse
+from os import system
+
+my_parser = argparse.ArgumentParser(description='Read the content of a csv file.')
+
+# Add the arguments
+my_parser.add_argument('--path','-p',
+                       metavar='path',
+                       type=str,
+                       required=True,
+                       help='the path to list')
+my_parser.add_argument('--column','-c',
+                       metavar='column1 column2..',
+                       type=str,
+                       help='columns to list'
+                       )
+
+# Execute the parse_args() method
+args = my_parser.parse_args()
+
+file = args.path
+try:
+ column = args.column.split(',')
+ length = len(column)
+except AttributeError:
+ column = None
+ length = None
+
+if(file==None):
+   system("./"+argv[0]+" --help")
+
+elif(file!=None and column == None): 
+   try:
+     with open(file) as csv_file:
+          csv_reader = csv.reader(csv_file,delimiter=',')
+          for row in csv_reader:
+                 print(row)
+   except FileNotFoundError:
+        print("[!]Path: "+file+ " doesn't exist.")
+
+elif(file!=None and column!=None):
+  try:
+    with open(file) as csv_file:
+       csv_reader = csv.DictReader(csv_file)
+       for i in range(length):
+           for row in csv_reader:
+             for i in range(length):
+                print(row[column[i]])
+  except FileNotFoundError:
+        print("[!]Path: "+file+ " doesn't exist.")
+  except KeyError:
+       print("[!]Column:" + row[column[i]] + "doesn't exist.")
+             
+             
+           
